@@ -1,0 +1,16 @@
+{
+    "labels": {
+        "big": {
+            "notes": ["Thi", "Ku", "ka"],
+            "id": [0]
+        },
+        "small": {
+            "notes": ["tha"],
+            "id": [1]
+        }, 
+        "both": {
+            "notes": ["theem"],
+            "id": [2]
+        } 
+    }
+}
