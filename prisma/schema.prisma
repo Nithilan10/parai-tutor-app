@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  password  String    // hashed
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relations
+  tutorials Tutorial[]
+}
+
+model Tutorial {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  createdAt   DateTime  @default(now())
+
+  // Author relation
+  authorId String
+  author   User     @relation(fields: [authorId], references: [id])
+
+  // Nilais in this tutorial
+  nilais Nilai[]
+}
+
+model Nilai {
+  id        String   @id @default(cuid())
+  name      String   // e.g., Nilai 1, Nilai 2
+  order     Int      // sequence order
+  createdAt DateTime @default(now())
+
+  tutorialId String
+  tutorial   Tutorial @relation(fields: [tutorialId], references: [id])
+
+  // Beats in this Nilai
+  beats Beat[]
+}
+
+model Beat {
+  id        String   @id @default(cuid())
+  name      String   // e.g., "thi", "tha", "theem"
+  type      String   // big stick / small stick / both
+  timing    Int?     // in ms offset if needed
+  audioUrl  String?  // where the audio file is stored (cloud)
+  createdAt DateTime @default(now())
+
+  nilaiId String
+  nilai   Nilai @relation(fields: [nilaiId], references: [id])
+}
