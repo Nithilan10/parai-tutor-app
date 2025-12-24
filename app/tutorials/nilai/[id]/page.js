@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Play } from "lucide-react";
+import {UploadBeatPage} from "../components/upload.js"
 
 export default function Nilai1Page() {
   const [selectedBeat, setSelectedBeat] = useState(null);
@@ -66,6 +67,8 @@ export default function Nilai1Page() {
             >
               <Play size={18} /> Play Again
             </button>
+
+            <UploadBeatPage></UploadBeatPage>
 
             <button
               onClick={() => setSelectedBeat(null)}
