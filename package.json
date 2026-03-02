@@ -6,13 +6,21 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:seed": "node prisma/seed.js",
+    "generate:audio": "node scripts/generate-audio.js",
+    "db:push": "prisma db push",
+    "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^6.15.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "framer-motion": "^12.23.6",
+    "lucide-react": "^0.563.0",
     "next": "15.4.1",
     "next-auth": "^4.24.11",
     "prisma": "^6.15.0",

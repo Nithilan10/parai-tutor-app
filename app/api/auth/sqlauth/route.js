@@ -1,33 +1,30 @@
-import { PrismaClient } from "@prisma/client"
-import { getServerSession } from "next-auth"
-import { authOptions } from "../[...nextauth]/route"
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../[...nextauth]/route";
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-export default async function GET(res) {
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
 
-    const session = await getServerSession(authOptions)
-
-    if(!session) {
-        return res.status(500).JSON({error: "SERVER ERROR"})
+    if (!session) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
-        where: {
-            email: session.user.email
-        },
-        select: {
-            id: true,
-            email: true,
-            name: true
-        }
-
-    })
+      where: { email: session.user.email },
+      select: { id: true, email: true, name: true },
+    });
 
     if (!user) {
-        return res.status(404).json({error: "user does not exist"})
+      return NextResponse.json({ error: "User does not exist" }, { status: 404 });
     }
 
-    return res.status(200).json({user})
-
+    return NextResponse.json(user, { status: 200 });
+  } catch (err) {
+    console.error("GET /api/auth/sqlauth error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
 }

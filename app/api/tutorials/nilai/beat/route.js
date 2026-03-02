@@ -1,14 +1,25 @@
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
-    if (req.method == 'GET') {
-        prisma.beats.findMany({
-            where: {nilaiId: Number(nilaiId)},
-            orderBy: {order: 'asc'},
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const nilaiId = searchParams.get("nilaiId");
 
-        })
-        return res.status(200).json(beats);
+    if (!nilaiId) {
+      return NextResponse.json({ error: "nilaiId required" }, { status: 400 });
     }
+
+    const beats = await prisma.beat.findMany({
+      where: { nilaiId },
+      orderBy: { order: "asc" },
+    });
+
+    return NextResponse.json({ beats }, { status: 200 });
+  } catch (err) {
+    console.error("GET /api/tutorials/nilai/beat error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
 }

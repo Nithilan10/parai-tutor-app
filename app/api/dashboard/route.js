@@ -1,4 +1,3 @@
-// app/api/dashboard/route.js
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -6,10 +5,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-/**
- * GET /api/dashboard
- * Returns the list of Nilais with counts and user completion summaries.
- */
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -17,7 +12,6 @@ export async function GET() {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    // 1) Load nilais and their beats
     const nilais = await prisma.nilai.findMany({
       select: {
         id: true,
@@ -28,16 +22,13 @@ export async function GET() {
       orderBy: { order: "asc" },
     });
 
-    // 2) Load this user's progress for beats
-    //    (Assumes a table like UserBeatProgress with unique (userId, beatId))
     const progress = await prisma.userBeatProgress.findMany({
       where: { userId: session.user.id },
-      select: { beatId: true, status: true }, // e.g. status: "completed" | "in_progress" | "not_started"
+      select: { beatId: true, status: true },
     });
 
     const progressByBeatId = new Map(progress.map(p => [p.beatId, p.status]));
 
-    // 3) Build the response payload
     const payload = nilais.map(n => {
       const total = n.beats.length;
       const completed = n.beats.filter(b => progressByBeatId.get(b.id) === "completed").length;
@@ -60,11 +51,6 @@ export async function GET() {
   }
 }
 
-/**
- * POST /api/dashboard
- * Optional helper to upsert beat progress after a user completes a beat.
- * Body: { beatId: string|number, status: "completed" | "in_progress" | "not_started" }
- */
 export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
@@ -79,10 +65,10 @@ export async function POST(req) {
 
     const result = await prisma.userBeatProgress.upsert({
       where: {
-        userId_beatId: { userId: session.user.id, beatId: Number(beatId) },
+        userId_beatId: { userId: session.user.id, beatId: String(beatId) },
       },
       update: { status },
-      create: { userId: session.user.id, beatId: Number(beatId), status },
+      create: { userId: session.user.id, beatId: String(beatId), status },
     });
 
     return NextResponse.json({ ok: true, progress: result }, { status: 200 });

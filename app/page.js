@@ -2,25 +2,33 @@
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import Globe from '@/components/Globe'; // Optional, can be customized
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import Globe from '@/components/Globe';
 
 export default function IndexPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  if (session) {
-    window.location.href = '/dashboard';
+  useEffect(() => {
+    if (status === 'authenticated' && session) {
+      router.replace('/dashboard');
+    }
+  }, [session, status, router]);
+
+  if (status === 'loading') {
+    return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
   }
 
   return (
     <div className="w-full bg-gradient-to-b from-yellow-100 to-red-50 min-h-screen overflow-x-hidden">
-      {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
         className="h-screen flex flex-col items-center justify-center relative"
       >
-        <div className="absolute inset-0 bg-[url('/parai-bg.jpg')] bg-cover bg-center opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-200/40 via-red-100/30 to-orange-200/40 bg-cover bg-center" />
 
         <motion.h1
           initial={{ y: 20 }}
@@ -56,7 +64,6 @@ export default function IndexPage() {
         </div>
       </motion.section>
 
-      {/* Features Section */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <motion.h2
@@ -104,7 +111,6 @@ export default function IndexPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
       <section className="py-20 bg-yellow-50">
         <div className="max-w-6xl mx-auto px-4">
           <motion.h2
@@ -117,7 +123,7 @@ export default function IndexPage() {
           </motion.h2>
 
           <div className="relative h-[600px] flex items-center justify-center">
-            <Globe /> {/* Optional visual */}
+            <Globe />
             <div className="absolute inset-0 flex items-center justify-center">
               {[
                 'My kids are learning Parai at home!',
@@ -145,7 +151,6 @@ export default function IndexPage() {
         </div>
       </section>
 
-      {/* Call to Action */}
       <section className="py-20 bg-red-700">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.h2

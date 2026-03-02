@@ -1,5 +1,6 @@
 "use client"
 
+import authBg from "../assets/auth-bg.jpeg"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ParaiInput } from "@/components/paraiInput"
@@ -41,7 +42,7 @@ export default function Register() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/auth-bg.png')",
+          backgroundImage: `url(${authBg.src})`,
           filter: "brightness(0.5)",
         }}
       />

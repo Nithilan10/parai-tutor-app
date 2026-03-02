@@ -1,37 +1,21 @@
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
-export default async function handler(req, res) {
-    if (req.method == 'GET')  {
-        const tutorials = await prisma.tutorials.findMany()
-        return res.status(200).json({tutorials})
-    }
-    if (req.method == 'POST') {
-        try {
-            const {nilais, beats, description} = req.body
+const prisma = new PrismaClient();
 
-            if (!nilais || !beats || !Array.isArray(beats)) {
-                return res.status(400).json({error: "Missing required fields"})
-            }
-
-            const newTutorial = await prisma.tutorials.create({
-                data: {
-                    nilai1,
-                    beats: {set:beats},
-                    description
-                }
-            })
-
-            return res.status(200).json({tutorial: newTutorial})
-        } catch(error) {
-            console.log(error)
-            return res.status(500).json({error: "server error"})
-        }
-    }
-}
 export async function GET() {
-    
-    
-
-    
+  try {
+    const tutorials = await prisma.tutorial.findMany({
+      include: {
+        nilais: {
+          orderBy: { order: "asc" },
+          include: { beats: { orderBy: { order: "asc" } } },
+        },
+      },
+    });
+    return NextResponse.json({ tutorials }, { status: 200 });
+  } catch (err) {
+    console.error("GET /api/tutorials error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
 }

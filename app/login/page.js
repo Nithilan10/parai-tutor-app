@@ -1,5 +1,5 @@
 "use client"
-
+import authBg from "../assets/auth-bg.jpeg";
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
@@ -34,7 +34,7 @@ export default function Login() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/auth-bg.png')",
+          backgroundImage: `url(${authBg.src})`,
           filter: "brightness(0.5)",
         }}
       />

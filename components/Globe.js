@@ -6,11 +6,14 @@ export default function Globe() {
   const mountRef = useRef(null)
 
   useEffect(() => {
+    const mount = mountRef.current
+    if (!mount) return
+
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
     const renderer = new THREE.WebGLRenderer({ alpha: true })
     renderer.setSize(500, 500)
-    mountRef.current.appendChild(renderer.domElement)
+    mount.appendChild(renderer.domElement)
 
     const geometry = new THREE.SphereGeometry(2, 32, 32)
     const material = new THREE.MeshPhongMaterial({
@@ -34,7 +37,7 @@ export default function Globe() {
     animate()
 
     return () => {
-      mountRef.current?.removeChild(renderer.domElement)
+      mount?.removeChild(renderer.domElement)
     }
   }, [])
 

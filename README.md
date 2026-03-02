@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Parai Tutor App
 
-## Getting Started
+Learn the art of Parai drumming — a traditional Tamil drum. Preserve culture through rhythm with guided tutorials and practice tools.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Landing Page** – Hero, features, testimonials, and call-to-action
+- **Authentication** – Register, login (credentials + optional GitHub OAuth)
+- **Dashboard** – Browse Nilais (lessons) with progress tracking
+- **Tutorial Nilai Pages** – Dynamic lessons with beats (Thi, Tha, Theem, Ku, Ka)
+- **Beat Practice** – Play audio, practice modal, mark beats complete
+- **Progress Tracking** – UserBeatProgress for completion status
+- **Audio** – Placeholder WAV files for each beat (replace with real recordings)
+- **Protected Routes** – Dashboard requires login
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your DATABASE_URL and NEXTAUTH_SECRET
+   ```
 
-## Learn More
+3. **Database**
+   ```bash
+   npx prisma db push
+   npm run db:seed
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Generate audio** (optional; placeholders already in `public/audio/`)
+   ```bash
+   npm run generate:audio
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Run**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Seed Data
 
-## Deploy on Vercel
+- **Admin user**: `admin@parai.app` / `admin123`
+- **Tutorial**: Parai Basics with 3 Nilais
+- **Nilai 1**: Thi, Tha, Theem
+- **Nilai 2**: Ku, Ka
+- **Nilai 3**: Thi, Tha, Theem, Ku
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 15, React 19, Tailwind CSS 4
+- NextAuth.js, Prisma, SQL Server
+- Framer Motion, Three.js, Lucide icons

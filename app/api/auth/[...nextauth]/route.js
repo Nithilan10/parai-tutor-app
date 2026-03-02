@@ -2,7 +2,7 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs"; // for password hashing
+import bcrypt from "bcryptjs"; 
 
 const prisma = new PrismaClient();
 
@@ -49,7 +49,7 @@ export const authOptions = {
   pages: {
     signIn: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET, // 👈 important fix
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
