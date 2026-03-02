@@ -23,6 +23,7 @@ MODEL_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 SUNDUKUCHI_MP3_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "sundukuchi_mp3")
 CLASSES = ["adikuchi", "sundukuchi"]
 NUM_FAKE_SAMPLES = 50
+NUM_SUNDUKUCHI_MP3 = 250
 
 
 def generate_fake_wav(output_path, frequency=220, duration=1.0, sample_rate=22050, seed=None):
@@ -74,25 +75,31 @@ def generate_fake_data():
 
 
 def create_sundukuchi_mp3_directory():
-    """Create directory of fake sundukuchi MP3 files (sundukuchi1.mp3, sundukuchi2.mp3, etc.)."""
+    """Create directory of fake sundukuchi MP3 files (sundukuchi_001.mp3 through sundukuchi_250.mp3)."""
     os.makedirs(SUNDUKUCHI_MP3_DIR, exist_ok=True)
     sundukuchi_dir = os.path.join(DATA_DIR, "sundukuchi")
     converted = 0
-    for i in range(1, NUM_FAKE_SAMPLES + 1):
-        wav_path = os.path.join(sundukuchi_dir, f"sundukuchi{i}.wav")
-        mp3_path = os.path.join(SUNDUKUCHI_MP3_DIR, f"sundukuchi{i}.mp3")
+    for i in range(1, NUM_SUNDUKUCHI_MP3 + 1):
+        num_str = f"{i:03d}"
+        wav_path = os.path.join(sundukuchi_dir, f"sundukuchi{(i - 1) % NUM_FAKE_SAMPLES + 1}.wav")
+        if not os.path.exists(wav_path):
+            wav_path = os.path.join(sundukuchi_dir, f"sundukuchi1.wav")
+        mp3_path = os.path.join(SUNDUKUCHI_MP3_DIR, f"sundukuchi_{num_str}.mp3")
         if os.path.exists(wav_path) and wav_to_mp3(wav_path, mp3_path):
             converted += 1
     if converted == 0:
         import shutil
-        for i in range(1, NUM_FAKE_SAMPLES + 1):
-            src = os.path.join(sundukuchi_dir, f"sundukuchi{i}.wav")
-            dst = os.path.join(SUNDUKUCHI_MP3_DIR, f"sundukuchi{i}.wav")
+        for i in range(1, NUM_SUNDUKUCHI_MP3 + 1):
+            num_str = f"{i:03d}"
+            src = os.path.join(sundukuchi_dir, f"sundukuchi{(i - 1) % NUM_FAKE_SAMPLES + 1}.wav")
+            if not os.path.exists(src):
+                src = os.path.join(sundukuchi_dir, f"sundukuchi1.wav")
+            dst = os.path.join(SUNDUKUCHI_MP3_DIR, f"sundukuchi_{num_str}.wav")
             if os.path.exists(src):
                 shutil.copy(src, dst)
-        print(f"Created {SUNDUKUCHI_MP3_DIR} with WAV files (install ffmpeg for MP3)")
+        print(f"Created {SUNDUKUCHI_MP3_DIR} with 250 WAV files (install ffmpeg for MP3)")
     else:
-        print(f"Created {SUNDUKUCHI_MP3_DIR} with {converted} MP3 files")
+        print(f"Created {SUNDUKUCHI_MP3_DIR} with {converted} MP3 files (sundukuchi_001.mp3 to sundukuchi_250.mp3)")
 
 
 def load_or_create_model():
