@@ -1,10 +1,16 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { Play, ChevronLeft, ChevronRight, Timer } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
+=======
+import { useState } from "react";
+import { Play } from "lucide-react";
+import {UploadBeatPage} from "../components/upload.js"
+>>>>>>> dd06bc994bf246939fc9a8cc4761a3a6150c1362
 
 export default function NilaiPage() {
   const router = useRouter();
@@ -190,6 +196,8 @@ export default function NilaiPage() {
             >
               <Play size={18} /> Play Again
             </button>
+
+            <UploadBeatPage></UploadBeatPage>
 
             <button
               onClick={() => {
