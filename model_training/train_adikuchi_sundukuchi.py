@@ -1,8 +1,4 @@
-"""
-Train beat classifier on adikuchi and sundukuchi data.
-Uses same model architecture as training.py, generates fake data,
-creates sundukuchi MP3 directory, and trains the model.
-"""
+
 import os
 import numpy as np
 import tensorflow as tf
@@ -24,20 +20,6 @@ SUNDUKUCHI_MP3_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "sund
 CLASSES = ["adikuchi", "sundukuchi"]
 NUM_FAKE_SAMPLES = 50
 NUM_SUNDUKUCHI_MP3 = 250
-
-
-def generate_fake_wav(output_path, frequency=220, duration=1.0, sample_rate=22050, seed=None):
-    """Generate synthetic WAV file (drum-like tone)."""
-    if seed is not None:
-        np.random.seed(seed)
-    t = np.linspace(0, duration, int(sample_rate * duration), dtype=np.float32)
-    tone = np.sin(2 * np.pi * frequency * t) * 0.4
-    decay = np.exp(-2 * t / duration)
-    noise = np.random.randn(len(t)).astype(np.float32) * 0.05
-    samples = (tone * decay + noise).astype(np.float32)
-    samples = np.clip(samples, -1, 1)
-    import scipy.io.wavfile
-    scipy.io.wavfile.write(output_path, sample_rate, (samples * 32767).astype(np.int16))
 
 
 def wav_to_mp3(wav_path, mp3_path):
@@ -72,34 +54,6 @@ def generate_fake_data():
             freq = base_freq + np.random.randint(-15, 15) if i > 1 else base_freq
             generate_fake_wav(path, frequency=freq, seed=i + ord(label[0]))
     print(f"Generated {NUM_FAKE_SAMPLES} fake WAV files per class in {DATA_DIR}")
-
-
-def create_sundukuchi_mp3_directory():
-    """Create directory of fake sundukuchi MP3 files (sundukuchi_001.mp3 through sundukuchi_250.mp3)."""
-    os.makedirs(SUNDUKUCHI_MP3_DIR, exist_ok=True)
-    sundukuchi_dir = os.path.join(DATA_DIR, "sundukuchi")
-    converted = 0
-    for i in range(1, NUM_SUNDUKUCHI_MP3 + 1):
-        num_str = f"{i:03d}"
-        wav_path = os.path.join(sundukuchi_dir, f"sundukuchi{(i - 1) % NUM_FAKE_SAMPLES + 1}.wav")
-        if not os.path.exists(wav_path):
-            wav_path = os.path.join(sundukuchi_dir, f"sundukuchi1.wav")
-        mp3_path = os.path.join(SUNDUKUCHI_MP3_DIR, f"sundukuchi_{num_str}.mp3")
-        if os.path.exists(wav_path) and wav_to_mp3(wav_path, mp3_path):
-            converted += 1
-    if converted == 0:
-        import shutil
-        for i in range(1, NUM_SUNDUKUCHI_MP3 + 1):
-            num_str = f"{i:03d}"
-            src = os.path.join(sundukuchi_dir, f"sundukuchi{(i - 1) % NUM_FAKE_SAMPLES + 1}.wav")
-            if not os.path.exists(src):
-                src = os.path.join(sundukuchi_dir, f"sundukuchi1.wav")
-            dst = os.path.join(SUNDUKUCHI_MP3_DIR, f"sundukuchi_{num_str}.wav")
-            if os.path.exists(src):
-                shutil.copy(src, dst)
-        print(f"Created {SUNDUKUCHI_MP3_DIR} with 250 WAV files (install ffmpeg for MP3)")
-    else:
-        print(f"Created {SUNDUKUCHI_MP3_DIR} with {converted} MP3 files (sundukuchi_001.mp3 to sundukuchi_250.mp3)")
 
 
 def load_or_create_model():
@@ -140,12 +94,6 @@ def create_model():
 
 
 def main():
-    print("Generating fake adikuchi and sundukuchi data...")
-    generate_fake_data()
-
-    print("Creating sundukuchi MP3 directory...")
-    create_sundukuchi_mp3_directory()
-
     print("Loading features...")
     X, y = [], []
     for idx, label in enumerate(CLASSES):

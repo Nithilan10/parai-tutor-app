@@ -59,6 +59,12 @@ export default function Navbar() {
           <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-red-600">
             About
           </Link>
+          <Link href="/history" className="text-gray-600 dark:text-gray-300 hover:text-red-600">
+            History
+          </Link>
+          <Link href="/making-of-parai" className="text-gray-600 dark:text-gray-300 hover:text-red-600">
+            Making of a Parai
+          </Link>
         </div>
       </div>
     </nav>
