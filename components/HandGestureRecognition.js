@@ -10,7 +10,7 @@ export default function HandGestureRecognition({ onGestureDetected }) {
   const [handLandmarker, setHandLandmarker] = useState(null);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [detectedGesture, setDetectedGesture] = useState("");
-  const [velocities, setVelocities] = useState({ Left: 0, Right: 0 });
+  const [debugInfo, setDebugInfo] = useState({});
   const lastHandPositions = useRef({}).current;
   const lastGesture = useRef("");
 
@@ -22,7 +22,7 @@ export default function HandGestureRecognition({ onGestureDetected }) {
       const landmarker = await HandLandmarker.createFromOptions(vision, {
         baseOptions: {
           modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
-          delegate: "GPU",
+          delegate: "CPU",
         },
         runningMode: "VIDEO",
         numHands: 2,
@@ -65,6 +65,11 @@ export default function HandGestureRecognition({ onGestureDetected }) {
     }
 
     const video = videoRef.current;
+    if (video.readyState < 2) {
+      window.requestAnimationFrame(predictWebcam);
+      return;
+    }
+
     const canvas = canvasRef.current;
     const canvasCtx = canvas.getContext("2d");
 
@@ -86,44 +91,57 @@ export default function HandGestureRecognition({ onGestureDetected }) {
 
       lastVideoTime = video.currentTime;
       const results = handLandmarker.detectForVideo(video, startTimeMs);
+      console.log("MediaPipe results:", results);
 
       canvasCtx.save();
       canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-      if (results.landmarks) {
-        let gesture = "";
-        let leftHandFast = false;
-        let rightHandFast = false;
-        const newVelocities = { Left: 0, Right: 0 };
+      if (results.landmarks && results.landmarks.length > 0) {
+        const newDebugInfo = {};
+        let leftHand, rightHand;
 
-        for (let i = 0; i < results.landmarks.length; i++) {
-          const landmarks = results.landmarks[i];
-          const handedness = results.handedness[i] && results.handedness[i][0].displayName;
-          const wrist = landmarks[0];
-
-          if (lastHandPositions[handedness]) {
-            const lastWrist = lastHandPositions[handedness];
-            const velocity = Math.sqrt(Math.pow(wrist.x - lastWrist.x, 2) + Math.pow(wrist.y - lastWrist.y, 2)) / deltaTime;
-            newVelocities[handedness] = velocity;
-            if (velocity > 0.015) { // Velocity threshold
-              if (handedness === "Left") leftHandFast = true;
-              if (handedness === "Right") rightHandFast = true;
-            }
+        if (results.landmarks.length === 2) {
+          const hand1 = results.landmarks[0];
+          const hand2 = results.landmarks[1];
+          if (hand1[0].x < hand2[0].x) {
+            leftHand = hand1;
+            rightHand = hand2;
+          } else {
+            leftHand = hand2;
+            rightHand = hand1;
           }
-          lastHandPositions[handedness] = wrist;
-          
-          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
-            color: "#00FF00",
-            lineWidth: 8,
-          });
-          drawLandmarks(canvasCtx, landmarks, { color: "#FF0000", lineWidth: 2, radius: 8 });
+        } else if (results.handedness[0][0].displayName === 'Left') {
+          leftHand = results.landmarks[0];
+        } else {
+          rightHand = results.landmarks[0];
         }
-        setVelocities(newVelocities);
 
-        if (leftHandFast && rightHandFast) {
+        const processHand = (hand, handName) => {
+          if (!hand) return;
+
+          const wrist = hand[0];
+          let velocity = 0;
+
+          if (lastHandPositions[handName]) {
+            const lastWrist = lastHandPositions[handName];
+            velocity = Math.sqrt(Math.pow(wrist.x - lastWrist.x, 2) + Math.pow(wrist.y - lastWrist.y, 2)) / deltaTime;
+          }
+
+          newDebugInfo[handName] = { x: wrist.x, y: wrist.y, velocity };
+          lastHandPositions[handName] = wrist;
+        };
+
+        processHand(leftHand, "Left");
+        processHand(rightHand, "Right");
+
+        let gesture = "";
+        const leftVelocity = newDebugInfo["Left"]?.velocity || 0;
+        const rightVelocity = newDebugInfo["Right"]?.velocity || 0;
+
+        if (leftVelocity > 0.015 && rightVelocity > 0.015) {
           gesture = "theem";
-        } else if (rightHandFast) {
+        } else if (rightVelocity > 0.015) {
           gesture = "ku";
-        } else if (leftHandFast) {
+        } else if (leftVelocity > 0.015) {
           gesture = "tha";
         }
 
@@ -132,10 +150,19 @@ export default function HandGestureRecognition({ onGestureDetected }) {
           lastGesture.current = gesture;
           setTimeout(() => {
             lastGesture.current = "";
-          }, 500); // Reset after 0.5 second to allow detecting the same gesture again
+          }, 500);
         }
 
         setDetectedGesture(gesture);
+        setDebugInfo(newDebugInfo);
+
+        for (const landmarks of results.landmarks) {
+          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+            color: "#00FF00",
+            lineWidth: 8,
+          });
+          drawLandmarks(canvasCtx, landmarks, { color: "#FF0000", lineWidth: 2, radius: 8 });
+        }
       }
       canvasCtx.restore();
     }
@@ -150,8 +177,8 @@ export default function HandGestureRecognition({ onGestureDetected }) {
       <video ref={videoRef} className="w-full h-auto" autoPlay playsInline />
       <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
       <div className="absolute top-4 right-4 bg-black/50 text-white text-lg p-2 rounded">
-        <p>Left Velocity: {velocities.Left.toFixed(4)}</p>
-        <p>Right Velocity: {velocities.Right.toFixed(4)}</p>
+        <p>Left Hand: {debugInfo.Left ? `x: ${debugInfo.Left.x.toFixed(2)}, y: ${debugInfo.Left.y.toFixed(2)}, v: ${debugInfo.Left.velocity.toFixed(4)}` : "Not detected"}</p>
+        <p>Right Hand: {debugInfo.Right ? `x: ${debugInfo.Right.x.toFixed(2)}, y: ${debugInfo.Right.y.toFixed(2)}, v: ${debugInfo.Right.velocity.toFixed(4)}` : "Not detected"}</p>
       </div>
       {detectedGesture && (
         <div className="absolute top-4 left-4 bg-black/50 text-white text-2xl font-bold p-2 rounded">
