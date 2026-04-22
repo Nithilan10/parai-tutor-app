@@ -1,51 +1,46 @@
-# Parai Audio Model Training
+# Parai beat model (pretrained AST → fine-tuned)
 
-This directory contains the scripts to train a custom audio classification model to recognize the "ku," "tha," and "theem" drum sounds.
+## Pretrained model (downloaded from Hugging Face)
 
-## Setup
+| Item | Value |
+|------|--------|
+| **Hub ID** | `MIT/ast-finetuned-audioset-10-10-0.4593` |
+| **Architecture** | Audio Spectrogram Transformer (AST) |
+| **Pretraining** | Fine-tuned on **Google AudioSet** (broad audio labels, strong for general sounds including percussion) |
+| **Local cache** | Run `python download_pretrained.py` → `pretrained_checkpoints/ast-audioset/` |
 
-1.  **Install Dependencies:**
-    First, you need to install the necessary Python libraries. It is highly recommended to do this in a virtual environment.
+## Data layout & provenance
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+See **`../data/DATA_SOURCES.md`**.
 
-## Data
+1. `npm run generate:audio` (repo root) — placeholder WAVs in `public/audio/`
+2. `python bootstrap_parai_data.py` — copies + augments into `../data/parai/{big,small,both}/`
+3. Add your **real Parai recordings** into those folders for production.
 
-The training data should be placed in the `public/assets/audios` directory. The audio files should be organized into subdirectories named after their corresponding labels. For example:
+## Pipeline
 
+```bash
+cd model_training
+python -m venv .venv && source .venv/bin/activate  # optional
+pip install -r requirements.txt
+
+# Optional: pin weights locally (otherwise first train() downloads from Hub)
+python download_pretrained.py
+
+# From repo root, ensure public/audio exists
+cd .. && npm run generate:audio && cd model_training
+
+python bootstrap_parai_data.py
+python prepare_dataset.py
+python train.py
 ```
-public/assets/audios/
-├── ku/
-│   ├── ku_1.wav
-│   └── ku_2.wav
-├── tha/
-│   ├── tha_1.wav
-│   └── tha_2.wav
-└── theem/
-    ├── theem_1.wav
-    └── theem_2.wav
-```
 
-## Training Process
+Outputs:
 
-The training process is divided into two main steps:
+- `train_dataset/`, `test_dataset/`, `label_mappings.json`
+- `parai-ast-finetuned/` (checkpoints)
+- `parai-audio-model/` (final saved model + feature extractor)
 
-1.  **Prepare the Dataset:**
-    This script loads the audio files, creates a Hugging Face Dataset, and splits it into training and testing sets.
+## Note on older scripts
 
-    ```bash
-    python prepare_dataset.py
-    ```
-
-    This will create two directories, `train_dataset` and `test_dataset`, and a `label_mappings.json` file.
-
-2.  **Train the Model:**
-    This script loads the prepared datasets, fine-tunes the pre-trained BEATs model, and saves the final model.
-
-    ```bash
-    python train.py
-    ```
-
-    This will create a new directory called `parai-audio-model` containing the fine-tuned model and tokenizer.
+Legacy TensorFlow MFCC training and adikuchi-only scripts were removed in favor of this Hugging Face AST pipeline.

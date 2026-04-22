@@ -1,26 +1,91 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050202;
+  --foreground: #fef2f2;
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glow-red: rgba(220, 38, 38, 0.52);
+  --glow-rose: rgba(251, 113, 133, 0.38);
+  --glow-white: rgba(255, 255, 255, 0.25);
+  --parai-crimson: #9B1B1B;
+  --parai-gold: #D97706;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), var(--font-geist-mono), ui-monospace, monospace;
+  --font-tamil: var(--font-mukta-malar), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html:not(.dark) {
+  --background: #fffcf9;
+  --foreground: #1a0b0b;
+  --glass-border: rgba(15, 23, 42, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.65);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  @apply overflow-x-hidden;
+}
+
+.font-tamil {
+  font-family: var(--font-tamil);
+}
+
+/* Ethnofuturistic UI */
+.glass-panel-parai {
+  backdrop-filter: blur(24px) saturate(160%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+  background-image: url('https://www.transparenttextures.com/patterns/leather.png');
+}
+
+.text-gradient-neon,
+.text-gradient-brand {
+  background: linear-gradient(135deg, #f87171, #dc2626 50%, #fbbf24);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  @apply font-black tracking-tighter;
+}
+
+.btn-future-primary {
+  @apply relative overflow-hidden rounded-2xl px-8 py-4 font-black uppercase tracking-tighter text-white transition-all duration-300 active:scale-95;
+  background: linear-gradient(135deg, var(--parai-crimson), #7F1D1D);
+  box-shadow: 0 4px 20px rgba(155, 27, 27, 0.4);
+}
+
+.btn-future-primary:hover {
+  @apply -translate-y-0.5 shadow-2xl shadow-red-600/30;
+  filter: brightness(1.1);
+}
+
+.btn-future-ghost {
+  @apply rounded-2xl px-6 py-3 font-bold transition-all duration-300 border border-red-500/20 bg-red-500/5 hover:bg-red-500/15 hover:border-red-500/40;
+}
+
+/* Traditional Textures */
+.drum-texture {
+  background-image: url('https://www.transparenttextures.com/patterns/leather.png');
+  @apply opacity-20 pointer-events-none;
+}
+
+/* Scanline Effect */
+.scanline-parai {
+  background: linear-gradient(to bottom, transparent 0%, rgba(220, 38, 38, 0.1) 50%, transparent 100%);
+  background-size: 100% 8px;
+  @apply absolute inset-0 pointer-events-none;
+  animation: scanline 10s linear infinite;
+}
+
+@keyframes scanline {
+  from { background-position: 0 0; }
+  to { background-position: 0 100%; }
 }

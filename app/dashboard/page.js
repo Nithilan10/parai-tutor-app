@@ -1,108 +1,149 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useMemo } from "react"
-import { useRouter } from "next/navigation"
-import { Search, Heart } from "lucide-react"
-import { useFavorites } from "@/hooks/useFavorites"
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { Syne, Space_Mono } from "next/font/google";
+import { LogOut, Languages } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
+import TutorialsHubContent from "@/components/TutorialsHubContent";
+import "@/app/rw-landing.css";
+
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["400", "700", "800"],
+  variable: "--font-syne",
+});
+
+const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
+});
 
 export default function DashboardPage() {
-  const router = useRouter()
-  const [nilais, setNilais] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState("")
-  const { toggle, isFavorite } = useFavorites()
-
-  const filteredNilais = useMemo(() => {
-    if (!search.trim()) return nilais
-    const q = search.toLowerCase()
-    return nilais.filter((n) => n.name.toLowerCase().includes(q))
-  }, [nilais, search])
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const { language, toggleLanguage, t } = useLanguage();
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
-    let mounted = true
-    ;(async () => {
-      try {
-        const res = await fetch("/api/dashboard", { cache: "no-store" })
-        if (res.status === 401) {
-          router.push("/login")
-          return
-        }
-        const data = await res.json()
-        if (mounted) setNilais(data.nilais || [])
-      } catch (e) {
-        console.error(e)
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    })()
-    return () => { mounted = false }
-  }, [router])
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
 
-  const goToNilai = (id) => router.push(`/tutorials/nilai/${id}`)
+  const stripItems = ["Nilai drills", "Video library", "Chatbot", "Forums"];
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading…</div>
+  if (status === "loading" || status === "unauthenticated") {
+    return (
+      <div
+        className={`rw-dash-page ${syne.variable} ${spaceMono.variable} min-h-screen flex items-center justify-center`}
+      >
+        <p className="text-white/50 text-sm tracking-widest uppercase">Loading…</p>
+      </div>
+    );
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-amber-100 to-yellow-300 dark:from-gray-900 dark:to-gray-800 pt-20">
-      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white drop-shadow">🥁 Parai Tutor Dashboard</h1>
+    <div className={`rw-dash-page ${syne.variable} ${spaceMono.variable} relative z-10`}>
+      <header className="rw-dash-nav-wrap">
+        <div className="rw-dash-nav-inner">
+          <Link href="/dashboard" className="rw-nav-logo">
+            Parai<span>Tutor</span>
+          </Link>
 
-      <div className="relative w-full max-w-md mb-8">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-        <input
-          type="text"
-          placeholder="Search Nilais..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-red-500"
-        />
-      </div>
+          <button
+            type="button"
+            className="rw-dash-mobile-toggle"
+            aria-expanded={navOpen}
+            onClick={() => setNavOpen((o) => !o)}
+          >
+            {navOpen ? "Close" : "Menu"}
+          </button>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-        {filteredNilais.map(n => (
-          <div key={n.id} className="relative">
+          <nav
+            className={`rw-dash-nav-links-collapsible ${navOpen ? "rw-open" : ""}`}
+            aria-label="Dashboard"
+          >
+            <ul className="rw-dash-nav-links">
+              <li>
+                <Link href="/video-library" onClick={() => setNavOpen(false)}>
+                  {t("nav.videoLibrary")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/tutorials/parai-chatbot" onClick={() => setNavOpen(false)}>
+                  {t("nav.chatbot")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/forums" onClick={() => setNavOpen(false)}>
+                  {t("nav.forum")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/profile" onClick={() => setNavOpen(false)}>
+                  {t("nav.profile")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/history" onClick={() => setNavOpen(false)}>
+                  {t("nav.history")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" onClick={() => setNavOpen(false)}>
+                  {t("nav.about")}
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <div className="rw-dash-nav-actions">
             <button
-              onClick={(e) => {
-                e.stopPropagation()
-                toggle(n.id)
-              }}
-              className={`absolute -top-2 -right-2 z-10 p-2 rounded-full transition ${
-                isFavorite(n.id) ? "text-red-500" : "text-gray-400 hover:text-red-400"
-              }`}
-              aria-label="Toggle favorite"
+              type="button"
+              onClick={toggleLanguage}
+              className="rw-dash-logout !border-white/25 !text-white/80 hover:!bg-white/10 hover:!text-white"
+              aria-label="Toggle language"
             >
-              <Heart size={24} fill={isFavorite(n.id) ? "currentColor" : "none"} />
+              <Languages size={14} className="inline mr-1 opacity-80" />
+              {language === "en" ? "தமிழ்" : "EN"}
             </button>
-            <button
-              onClick={() => goToNilai(n.id)}
-              className="w-40 h-40 rounded-full border-8 border-gray-800 dark:border-gray-600
-                         bg-yellow-200 dark:bg-gray-700 shadow-lg flex flex-col items-center justify-center
-                         hover:scale-105 transition-transform duration-200"
-              style={{
-                backgroundImage: "url('/parai-drum.svg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            >
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">{n.name}</span>
-              <span className="text-sm text-gray-800 dark:text-gray-300 mt-1">
-                {n.completedCount}/{n.beatsCount} complete
-              </span>
+            <button type="button" className="rw-dash-logout" onClick={() => signOut({ callbackUrl: "/" })}>
+              <LogOut size={14} className="inline mr-1" />
+              {language === "ta" ? "வெளியேறு" : "Log out"}
             </button>
           </div>
+        </div>
+      </header>
+
+      <section className="rw-dash-hero">
+        <p className="rw-eyebrow" style={{ marginBottom: "0.75rem" }}>
+          Signed in · {session?.user?.name || session?.user?.email || "Learner"}
+        </p>
+        <h1 className="rw-dash-title">
+          Learn<span style={{ color: "var(--rw-red)" }}>.</span> tutorials
+        </h1>
+        <p className="rw-dash-sub">
+          Choose a Nilai, pick a beat, and practice with the camera. Use the link under the cards for the full
+          lesson (recording &amp; AI). Video library, chatbot, and forums stay in the bar above.
+        </p>
+      </section>
+
+      <div className="rw-dash-strip">
+        <span className="font-bold text-white/90">Hub</span>
+        {stripItems.map((label) => (
+          <span key={label} className="rw-dash-strip-tag">
+            {label}
+          </span>
         ))}
       </div>
 
-      {filteredNilais.length === 0 && (
-        <p className="text-gray-600 dark:text-gray-400">
-          {search ? "No Nilais match your search." : "No Nilais available."}
-        </p>
-      )}
-
-      <p className="mt-10 text-gray-700 dark:text-gray-300 text-lg">
-        Select a Nilai to begin your tutorial.
-      </p>
+      <div className="relative rw-dash-main z-10">
+        <TutorialsHubContent headingClassName="[&_h1]:text-white [&_h1]:from-white [&_h1]:to-red-200" />
+      </div>
     </div>
-  )
+  );
 }

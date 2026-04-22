@@ -1,0 +1,22 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "file:/data/dev.db"
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-change-me-in-production-use-openssl-rand-base64-32}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXT_PUBLIC_DEMO_MODE: "true"
+    volumes:
+      - parai-data:/data
+    command: >
+      sh -c "
+      export DATABASE_URL=file:/data/dev.db &&
+      npx prisma db push &&
+      npm run db:seed &&
+      npm run start
+      "
+
+volumes:
+  parai-data:

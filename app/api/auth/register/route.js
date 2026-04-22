@@ -1,29 +1,55 @@
-import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
-
-export async function POST(req, res) {
+export async function POST(request) {
   try {
-    const { email, password, name } = await req.json();
+    const body = await request.json().catch(() => ({}));
+    const emailRaw = body.email;
+    const passwordRaw = body.password;
+    const nameRaw = body.name;
+
+    const email =
+      typeof emailRaw === "string" ? emailRaw.trim().toLowerCase() : "";
+    const password = typeof passwordRaw === "string" ? passwordRaw : "";
+    const name = typeof nameRaw === "string" ? nameRaw.trim() : "";
 
     if (!email || !password || !name) {
-      return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400 });
+      return NextResponse.json(
+        { error: "Name, email, and password are required." },
+        { status: 400 }
+      );
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
     if (existingUser) {
-      return new Response(JSON.stringify({ error: "User already exists" }), { status: 409 });
+      return NextResponse.json({ error: "User already exists" }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
-      data: { email, name, password: hashedPassword }
+      data: {
+        email,
+        name,
+        password: hashedPassword,
+      },
     });
 
-    return new Response(JSON.stringify({ message: "User created", user: { id: user.id, email: user.email, name: user.name } }), { status: 201 });
+    return NextResponse.json(
+      {
+        message: "User created",
+        user: { id: user.id, email: user.email, name: user.name },
+      },
+      { status: 201 }
+    );
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    console.error("POST /api/auth/register:", err);
+    return NextResponse.json(
+      { error: err?.message || "Registration failed" },
+      { status: 500 }
+    );
   }
 }

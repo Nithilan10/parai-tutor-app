@@ -7,15 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:seed": "node prisma/seed.js",
+    "db:seed": "node prisma/seed.mjs",
     "generate:audio": "node scripts/generate-audio.js",
     "db:push": "prisma db push",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test:openai": "node scripts/test-openai.mjs",
+    "reels:bootstrap": "node scripts/bootstrap-ai-reels.mjs"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "@mediapipe/hands": "^0.4.1675469240",
     "@mediapipe/tasks-vision": "^0.10.32",
     "@prisma/client": "^6.15.0",

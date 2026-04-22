@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-config";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -12,7 +12,9 @@ export async function GET() {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
+    const firstTutorial = await prisma.tutorial.findFirst({ orderBy: { createdAt: "asc" } });
     const nilais = await prisma.nilai.findMany({
+      ...(firstTutorial?.id ? { where: { tutorialId: firstTutorial.id } } : {}),
       select: {
         id: true,
         name: true,

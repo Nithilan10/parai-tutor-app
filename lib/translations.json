@@ -1,0 +1,96 @@
+{
+  "en": {
+    "nav": {
+      "home": "Home",
+      "dashboard": "Dashboard",
+      "tutorials": "Tutorials",
+      "videoLibrary": "Video library",
+      "chatbot": "Parai chatbot",
+      "history": "History",
+      "about": "About",
+      "forum": "Forum",
+      "profile": "Profile"
+    },
+    "history": {
+      "title": "Heritage of the Parai",
+      "subtitle": "Discover the 3,000-year legacy of Tamil Nadu's ancient drum of voice and power.",
+      "sections": [
+        {
+          "title": "Origins in Sangam Literature",
+          "body": "The Parai is one of the oldest percussion instruments in the world. Mentioned extensively in Sangam literature (300 BCE – 300 CE), it was known as the 'Mother of Instruments'. In ancient Tamil kingdoms, the drum was used for public announcements, warning of approaching enemies, and summoning warriors to the battlefield. The word 'Parai' itself means 'to tell' or 'to speak'."
+        },
+        {
+          "title": "A Symbol of Resistance",
+          "body": "For centuries, the Parai was marginalized due to social structures. However, in recent decades, it has been reclaimed as a powerful symbol of identity, dignity, and resistance. It is no longer just a ritual instrument but a voice for social justice, echoing through streets and stages as a mark of cultural pride."
+        },
+        {
+          "title": "The Art of Construction",
+          "body": "Traditionally, the Parai is made from a ring of wood (often from the Neem tree) and a taut stretch of cow hide. It is played with two distinct sticks: the 'Malai' (a thick, short stick for bass tones) and the 'Kuchi' (a thin, long stick for sharp rhythms). The interaction between these two produces the complex 'Nilais' that we study today."
+        }
+      ]
+    },
+    "nilai": {
+      "practice_title": "Practice & Analysis",
+      "notation_label": "Rhythmic Notation",
+      "manual_mode": "Manual Mode",
+      "vision_mode": "Vision Mode",
+      "start_recording": "Start Recording",
+      "stop_recording": "Stop Recording",
+      "analyze": "Analyze Strokes",
+      "keyboard_title": "Keyboard Mode",
+      "keyboard_desc": "Press the Spacebar to simulate drum hits and track your timing.",
+      "hit_now": "HIT NOW!",
+      "live_sequence": "Live Sequence"
+    }
+  },
+  "ta": {
+    "nav": {
+      "home": "முகப்பு",
+      "dashboard": "முகப்பு",
+      "tutorials": "பயிற்சிகள்",
+      "videoLibrary": "காணொலி நூலகம்",
+      "chatbot": "பறை உரையாடல்",
+      "history": "வரலாறு",
+      "about": "பற்றி",
+      "forum": "மன்றம்",
+      "profile": "சுயவிவரம்"
+    },
+    "nilai": {
+      "practice_title": "பயிற்சி மற்றும் ஆய்வு",
+      "notation_label": "தாளக் குறிப்பு (Notation)",
+      "manual_mode": "விசைப்பலகை",
+      "vision_mode": "நிழற்படக் கருவி",
+      "start_recording": "பதிவைத் தொடங்கு",
+      "stop_recording": "பதிவை நிறுத்து",
+      "analyze": "ஆய்வு செய்",
+      "keyboard_title": "விசைப்பலகை முறை",
+      "keyboard_desc": "இடைவெளி விசையை (Spacebar) அழுத்தி தாளங்களை வாசிக்கவும்.",
+      "hit_now": "வாசிக்கவும்!",
+      "live_sequence": "வாசிக்கப்பட்ட தாளம்"
+    },
+    "history": {
+      "title": "பறையின் பாரம்பரியம்",
+      "subtitle": "தமிழ்நாட்டின் குரல் மற்றும் வலிமையின் 3,000 கால பழமையான பறையின் வரலாற்றைக் கண்டறியவும்.",
+      "sections": [
+        {
+          "title": "சங்க இலக்கியத்தில் தோற்றம்",
+          "body": "பறை உலகின் மிகப் பழமையான தாளக் கருவிகளில் ஒன்றாகும். சங்க இலக்கியங்களில் (கி.மு. 300 - கி.பி. 300) இது பற்றிய விரிவான மேற்சான்றுகள் உள்ளன. இது 'கருவிகளின் தாய்' என்று அழைக்கப்பட்டது. பண்டைய தமிழ் மன்னராட்சிகளில், பொது அறிவிப்புகள், எதிரிகளின் வருகையை எச்சரித்தல் மற்றும் வீரர்களை போர்க்களத்திற்கு அழைப்பதற்காக பறை பயன்படுத்தப்பட்டது. 'பறை' என்ற சொல்லுக்கு 'சொல்லுதல்' அல்லது 'பேசுதல்' என்று பொருள்."
+        },
+        {
+          "title": "எதிர்ப்பின் சின்னம்",
+          "body": "பல நூற்றாண்டுகளாக, சமூகக் கட்டமைப்புகளால் பறை ஓரம் கட்டப்பட்டது. இருப்பினும், சமீபத்திய தசாப்தங்களில், இது அடையாளம், கண்ணியம் மற்றும் எதிர்ப்பின் சக்திவாய்ந்த சின்னமாக மீட்கப்பட்டுள்ளது. இது இப்போது ஒரு சடங்கு கருவி மட்டுமல்ல, சமூக நீதிக்கான குரலாக, தெருக்களிலும் மேடைகளிலும் கலாச்சார பெருமையின் அடையாளமாக ஒலிக்கிறது."
+        },
+        {
+          "title": "கலை மற்றும் அமைப்பு",
+          "body": "பாரம்பரியமாக, பறை வேப்ப மரத்தின் ஒரு வளையத்தாலும், பசுந் தோலாலும் செய்யப்படுகிறது. இது இரண்டு மாறுபட்ட குச்சிகளால் வாசிக்கப்படுகிறது: 'அடிக்கோல்' (பாஸ் ஒலிகளுக்கான தடித்த, குட்டையான குச்சி) மற்றும் 'சுண்டுக்குச்சி' (கூர்மையான தாளங்களுக்கான மெல்லிய, நீண்ட குச்சி). இவை இரண்டிற்கும் இடையிலான தொடர்பு இன்று நாம் படிக்கும் சிக்கலான 'நிலைகளை' உருவாக்குகிறது."
+        }
+      ]
+    },
+    "about": {
+      "title": "பறை டுடோரைப் பற்றி",
+      "subtitle": "பண்டைய பாரம்பரியத்தை நவீன தொழில்நுட்பத்துடன் இணைக்கிறது.",
+      "mission": "பறையிசையை உலகளாவிய மக்களுக்குக் கொண்டு சேர்ப்பதன் மூலம் அதைக் காப்பதே எங்களது நோக்கம். கம்ப்யூட்டர் விஷன் மற்றும் ஊடாடும் பின்னூட்டங்கள் மூலம், ஒரு முதன்மை ஆசிரியரின் நிபுணத்துவத்தை உங்கள் வீட்டிற்குக் கொண்டு வருகிறோம்.",
+      "team": "தமிழ் பாரம்பரியத்திற்காக அர்ப்பணிக்கப்பட்ட கலைஞர்கள், தொழில்நுட்ப வல்லுநர்கள் மற்றும் கலாச்சார வரலாற்றாசிரியர்களின் கூட்டமைப்பால் உருவாக்கப்பட்டது."
+    }
+  }
+}

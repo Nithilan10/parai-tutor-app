@@ -1,65 +1,106 @@
 "use client";
 
 import Image from "next/image";
+import { historyImagery } from "@/lib/localImagery";
+import { useLanguage } from "@/lib/LanguageContext";
+import { Music, Landmark, Sparkles, ShieldCheck } from "lucide-react";
 
 export default function HistoryPage() {
+  const { t, language } = useLanguage();
+  
+  const iconMap = {
+    0: Music,
+    1: ShieldCheck,
+    2: Landmark
+  };
+
+  const sections = t("history.sections") || [];
+
   return (
-    <div className="min-h-screen bg-yellow-50">
-      <div className="max-w-5xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-extrabold text-red-700 sm:text-6xl">
-            The History of Parai
+    <div className="min-h-screen pt-12 pb-24 px-4 overflow-hidden relative">
+      {/* Decorative localized typography background */}
+      <div className="absolute top-20 left-0 w-full text-center pointer-events-none opacity-[0.03] select-none -z-10">
+        <h2 className="text-[20rem] font-black leading-none uppercase">பறை</h2>
+      </div>
+
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-24">
+          <h1 className="text-5xl md:text-7xl font-black text-gradient-neon tracking-tighter uppercase mb-6 drop-shadow-[0_0_25px_rgba(220,38,38,0.3)]">
+            {t("history.title")}
           </h1>
-          <p className="mt-4 text-xl text-gray-600">
-            A journey through the <span className="font-bold text-red-600">ancient origins</span> and <span className="font-bold text-red-600">cultural significance</span> of the parai drum.
+          <p className="mt-4 text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-4xl mx-auto font-medium leading-relaxed">
+            {t("history.subtitle")}
           </p>
         </div>
 
-        <div className="space-y-16">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="md:w-1/2">
-              <h2 className="text-3xl font-bold text-red-800 mb-4">An Ancient Instrument</h2>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                The <strong>parai</strong> is one of the oldest drums in Indian history, with a legacy that stretches back to prehistoric times. Its name, which means <span className="font-semibold text-yellow-800">"to speak"</span> or <span className="font-semibold text-yellow-800">"to tell"</span> in Tamil, hints at its historical importance as a tool for communication. The parai is mentioned in the <strong>Sangam literature</strong>, a collection of ancient Tamil texts, which confirms its use in a variety of contexts, from royal courts to religious ceremonies.
-              </p>
-            </div>
-            <div className="md:w-1/2">
-              <div className="relative w-full h-80 rounded-lg overflow-hidden shadow-2xl">
-                <Image src="/assets/parai-history-1.jpg" alt="Ancient Parai Depiction" fill style={{ objectFit: "cover" }} />
-              </div>
-              <p className="text-center mt-2 text-sm text-gray-500 italic">A depiction of the parai in ancient Tamil art.</p>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 gap-12">
+          {sections.map((s, i) => {
+            const Icon = iconMap[i] || Sparkles;
+            const images = [historyImagery.kingdoms, historyImagery.danceProcession, historyImagery.antiCaste];
+            const currentImage = images[i] || historyImagery.kingdoms;
 
-          <div className="flex flex-col md:flex-row-reverse items-center gap-12">
-            <div className="md:w-1/2">
-              <h2 className="text-3xl font-bold text-red-800 mb-4">A Tool of Communication</h2>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Historically, the parai was used to make <strong>important announcements</strong>, to summon people for gatherings, and even to alert them to upcoming wars. It was also a key instrument in a variety of cultural performances, including the traditional dance forms of <strong>parai attam</strong> and <strong>puliyattam</strong>. The sound of the parai was a familiar part of daily life, used in everything from festivals and weddings to funerals.
-              </p>
-            </div>
-            <div className="md:w-1/2">
-              <div className="relative w-full h-80 rounded-lg overflow-hidden shadow-2xl">
-                <Image src="/assets/parai-history-2.jpg" alt="Parai Attam Performance" fill style={{ objectFit: "cover" }} />
-              </div>
-              <p className="text-center mt-2 text-sm text-gray-500 italic">A vibrant Parai Attam performance.</p>
-            </div>
-          </div>
+            return (
+              <div
+                key={i}
+                className={`flex flex-col lg:flex-row items-stretch gap-12 group transition-all duration-700 ${
+                  i % 2 === 1 ? "lg:flex-row-reverse" : ""
+                }`}
+              >
+                {/* Content Panel */}
+                <div className="lg:w-1/2 flex flex-col justify-center">
+                  <div className="glass-panel-strong p-8 md:p-12 rounded-[2rem] border-red-500/10 hover:border-red-500/30 transition-all shadow-xl hover:shadow-red-500/5 relative overflow-hidden backdrop-blur-xl">
+                    <div className="absolute -top-6 -right-6 w-32 h-32 bg-red-500/5 rounded-full blur-3xl" />
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="p-3 bg-red-500/10 rounded-2xl text-red-600 dark:text-red-400">
+                        <Icon size={32} />
+                      </div>
+                      <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+                        {s.title}
+                      </h2>
+                    </div>
+                    <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal first-letter:text-5xl first-letter:font-black first-letter:mr-3 first-letter:float-left first-letter:text-red-600">
+                      {s.body}
+                    </p>
+                  </div>
+                </div>
 
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="md:w-1/2">
-              <h2 className="text-3xl font-bold text-red-800 mb-4">A Symbol of Cultural Identity</h2>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                The parai has a complex history with the <strong>caste system</strong> in India. For many years, it was associated with <strong>Dalit communities</strong> and was often considered an "impure" instrument. However, in recent years, there has been a movement to reclaim the parai as a symbol of <span className="font-semibold text-yellow-800">cultural identity</span> and <span className="font-semibold text-yellow-800">social freedom</span>. Today, the parai is celebrated as a powerful instrument of <strong>resistance</strong> and a proud symbol of <strong>Tamil heritage</strong>.
-              </p>
-            </div>
-            <div className="md:w-1/2">
-              <div className="relative w-full h-80 rounded-lg overflow-hidden shadow-2xl">
-                <Image src="/assets/parai-history-3.jpg" alt="Modern Parai Player" fill style={{ objectFit: "cover" }} />
+                {/* Visual Panel */}
+                <div className="lg:w-1/2 group-hover:scale-[1.02] transition-transform duration-700">
+                  <div className="relative w-full h-[300px] md:h-[500px] rounded-[2rem] overflow-hidden glass-panel p-2 shadow-2xl border-white/5">
+                    <Image
+                      src={currentImage.src}
+                      alt={s.title}
+                      fill
+                      className="object-cover rounded-[1.6rem] filter grayscale hover:grayscale-0 transition-all duration-1000"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                    
+                    {/* Floating Caption */}
+                    <div className="absolute bottom-8 left-8 right-8">
+                      <div className="p-4 bg-white/10 backdrop-blur-md rounded-xl border border-white/10">
+                        <p className="text-white text-sm font-mono tracking-widest uppercase opacity-90">
+                          {language === "ta" ? "வரலாற்று பதிவு" : "Historical Insight"}{" "}
+                          · {i + 1}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="text-center mt-2 text-sm text-gray-500 italic">A modern parai player, celebrating Tamil heritage.</p>
-            </div>
-          </div>
+            );
+          })}
+        </div>
+
+        {/* Conclusion / CTA */}
+        <div className="mt-32 text-center relative p-12 glass-panel-strong rounded-[3rem] border-red-500/10">
+          <div className="absolute inset-0 bg-[url('/drum-texture.jpg')] opacity-[0.03] pointer-events-none" />
+          <h3 className="text-3xl md:text-5xl font-black text-gradient-neon mb-8">
+            {language === "ta" ? "குரல் கொடுக்கத் தயாரா?" : "Ready to speak with the drum?"}
+          </h3>
+          <button className="btn-future-primary px-12 py-5 text-xl rounded-2xl shadow-2xl shadow-red-500/20">
+            {language === "ta" ? "பயிற்சியைத் தொடங்கு" : "Start Your Practice"}
+          </button>
         </div>
       </div>
     </div>

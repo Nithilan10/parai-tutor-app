@@ -1,44 +1,44 @@
-"use client"
+"use client";
 
-import authBg from "../assets/auth-bg.jpeg"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { ParaiInput } from "@/components/paraiInput"
+import authBg from "../assets/auth-bg.jpeg";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ParaiInput } from "@/components/paraiInput";
 
 export default function Register() {
-  const router = useRouter()
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" })
+  const router = useRouter();
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-  }
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        alert(data.error || "Registration failed")
-        return
+        alert(data.error || "Registration failed");
+        return;
       }
 
-      router.push("/login")
+      router.push("/login");
     } catch (err) {
-      console.error("Registration error:", err)
-      alert("Something went wrong. Please try again.")
+      console.error("Registration error:", err);
+      alert("Something went wrong. Please try again.");
     }
-  }
+  };
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full min-h-screen">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -48,8 +48,8 @@ export default function Register() {
       />
       <div className="absolute inset-0 bg-white opacity-30 mix-blend-lighten" />
 
-      <div className="relative z-10 flex items-center justify-center h-full">
-        <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+        <form className="space-y-4 flex flex-col items-center" onSubmit={handleSubmit}>
           <ParaiInput
             name="name"
             placeholder="Name"
@@ -69,14 +69,11 @@ export default function Register() {
             value={formData.password}
             onChange={handleChange}
           />
-          <button
-            type="submit"
-            className="bg-black text-white px-6 py-2 rounded-full"
-          >
+          <button type="submit" className="bg-black text-white px-6 py-2 rounded-full">
             Register
           </button>
         </form>
       </div>
     </div>
-  )
+  );
 }

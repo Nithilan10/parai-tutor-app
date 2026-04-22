@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -17,6 +17,8 @@ model User {
 
   tutorials    Tutorial[]
   beatProgress UserBeatProgress[]
+  forumPosts   ForumPost[]
+  forumLikes   ForumLike[]
 }
 
 model Tutorial {
@@ -70,4 +72,41 @@ model UserBeatProgress {
   beat Beat @relation(fields: [beatId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([userId, beatId])
+}
+
+model ForumPost {
+  id        String   @id @default(cuid())
+  title     String?
+  body      String
+  videoUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId String
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  likes ForumLike[]
+}
+
+model ForumLike {
+  id     String @id @default(cuid())
+  userId String
+  postId String
+
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+/** OpenAI-suggested Tamil arts / parai reels (YouTube). Validated before insert where possible. */
+model AiGeneratedReel {
+  id        String   @id @default(cuid())
+  videoId   String   @unique
+  title     String
+  caption   String
+  source    String   @default("openai")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }

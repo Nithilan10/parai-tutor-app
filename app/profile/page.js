@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import { BarChart3, Award } from "lucide-react";
 
 export default function ProfilePage() {
@@ -30,8 +29,8 @@ export default function ProfilePage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading…</div>
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="glass-panel-strong rounded-2xl px-8 py-6 text-lg">Loading…</div>
       </div>
     );
   }
@@ -41,12 +40,11 @@ export default function ProfilePage() {
   const percent = stats?.total ? Math.round((stats.completed / stats.total) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800">
-      <Navbar />
+    <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Profile</h1>
+        <h1 className="text-4xl font-bold text-gradient-neon mb-8">Profile</h1>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+        <div className="glass-panel-strong rounded-2xl p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Account</h2>
           <p className="text-gray-600 dark:text-gray-300">
             <strong>Name:</strong> {session.user?.name || "—"}
@@ -56,7 +54,7 @@ export default function ProfilePage() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+        <div className="glass-panel-strong rounded-2xl p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
             <BarChart3 size={24} /> Progress
           </h2>
@@ -79,7 +77,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-6 flex items-center gap-4">
+        <div className="glass-panel rounded-2xl p-6 flex items-center gap-4 border-amber-400/20">
           <Award size={48} className="text-amber-600" />
           <div>
             <h3 className="font-semibold text-gray-800 dark:text-white">Keep practicing!</h3>
@@ -89,10 +87,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <Link
-          href="/dashboard"
-          className="mt-6 inline-block bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700"
-        >
+        <Link href="/dashboard" className="mt-6 inline-block btn-future-primary rounded-2xl">
           Back to Dashboard
         </Link>
       </div>
