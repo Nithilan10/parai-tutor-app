@@ -100,7 +100,6 @@ export async function POST(req) {
       break;
     }
 
-    // eslint-disable-next-line no-await-in-loop
     const { items: rawItems, rawError } = await fetchReelSuggestionsFromOpenAI(
       batchSize,
       [...excludeIds]
@@ -113,7 +112,6 @@ export async function POST(req) {
     }
 
     const fresh = rawItems.filter((it) => !excludeIds.has(it.id));
-    // eslint-disable-next-line no-await-in-loop
     const validated = await filterExistingYoutubeIds(fresh);
 
     for (const it of validated) {
@@ -121,7 +119,6 @@ export async function POST(req) {
       insertBudget = await assertInsertBudget(prisma);
       if (!insertBudget.ok || insertBudget.remaining <= 0) break;
       try {
-        // eslint-disable-next-line no-await-in-loop
         await reel.create({
           data: {
             videoId: it.id,

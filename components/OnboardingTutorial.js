@@ -17,7 +17,7 @@ const TUTORIAL_STEPS = [
           Parai Tutor helps you learn the Tamil frame drum using <strong>computer vision</strong> and <strong>AI feedback</strong>.
         </p>
         <div className="glass-panel p-4 rounded-xl border-red-500/20">
-          <h4 className="text-sm font-bold text-red-400 mb-2">What you'll learn:</h4>
+          <h4 className="text-sm font-bold text-red-400 mb-2">What you&apos;ll learn:</h4>
           <ul className="space-y-2 text-sm text-slate-300">
             <li className="flex items-start gap-2">
               <Check size={16} className="text-emerald-400 mt-0.5 shrink-0" />
@@ -61,7 +61,7 @@ const TUTORIAL_STEPS = [
           <div className="glass-panel p-4 rounded-xl border-red-500/20">
             <h4 className="text-sm font-bold text-red-400 mb-2 flex items-center gap-2">
               <X size={16} />
-              DON'T
+              DON&apos;T
             </h4>
             <ul className="space-y-2 text-slate-300 text-sm">
               <li>• Too close or too far</li>
@@ -73,7 +73,7 @@ const TUTORIAL_STEPS = [
         </div>
         <div className="p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-xl">
           <p className="text-sm text-cyan-200">
-            <strong>Pro tip:</strong> You don't need an actual parai drum! Just mimic the hand movements.
+            <strong>Pro tip:</strong> You don&apos;t need an actual parai drum! Just mimic the hand movements.
           </p>
         </div>
       </div>
