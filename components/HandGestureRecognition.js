@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import { drawLandmarks } from "@/utils/drawing_utils";
+import { getAudioFeedback } from "@/lib/audioFeedback";
 
 const INDEX_TIP = 8;
 const MIDDLE_TIP = 12;
@@ -97,12 +98,13 @@ const MIN_TOWARD_VEL = 0.000085;
 
 /**
  * Index + middle tip toward drum; short window merges two strikes into theem.
- * @param {{ running?: boolean, mirror?: boolean, onGestureDetected?: (p: { gesture: string, timestampMs: number }) => void }} props
+ * @param {{ running?: boolean, mirror?: boolean, onGestureDetected?: (p: { gesture: string, timestampMs: number }) => void, playAudio?: boolean }} props
  */
 export default function HandGestureRecognition({
   running = true,
   mirror = true,
   onGestureDetected,
+  playAudio = true,
 }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -135,13 +137,21 @@ export default function HandGestureRecognition({
       lastGestureTime.current = now;
       if (running) {
         onGestureDetected?.({ gesture, timestampMs: Math.round(now) });
+        
+        // Play audio feedback immediately
+        if (playAudio) {
+          const audioFeedback = getAudioFeedback();
+          if (audioFeedback.initialized) {
+            audioFeedback.playGesture(gesture);
+          }
+        }
       }
       setDetectedGesture(gesture);
       setTimeout(() => setDetectedGesture(""), 480);
       smoothRef.current = { L: null, R: null };
       prevSampleRef.current = { L: null, R: null };
     },
-    [running, onGestureDetected, clearBothTimer]
+    [running, onGestureDetected, clearBothTimer, playAudio]
   );
 
   const fireGestureRef = useRef(fireGesture);
@@ -185,6 +195,12 @@ export default function HandGestureRecognition({
   useEffect(() => {
     let cancelled = false;
     async function initMediapipe() {
+      // Initialize audio feedback
+      const audioFeedback = getAudioFeedback();
+      if (!audioFeedback.initialized) {
+        audioFeedback.initialize().catch(e => console.warn('[GestureRecognition] Audio init failed:', e));
+      }
+      
       const vision = await FilesetResolver.forVisionTasks(
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
       );

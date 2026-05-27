@@ -43,6 +43,8 @@ model Nilai {
   tutorial   Tutorial @relation(fields: [tutorialId], references: [id])
 
   beats Beat[]
+
+  @@index([tutorialId, order])
 }
 
 model Beat {
@@ -58,6 +60,9 @@ model Beat {
   nilai   Nilai @relation(fields: [nilaiId], references: [id])
 
   userProgress UserBeatProgress[]
+
+  @@index([nilaiId, order])
+  @@index([type])
 }
 
 model UserBeatProgress {
@@ -72,6 +77,9 @@ model UserBeatProgress {
   beat Beat @relation(fields: [beatId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([userId, beatId])
+  @@index([userId, status])
+  @@index([beatId])
+  @@index([updatedAt])
 }
 
 model ForumPost {
@@ -86,6 +94,9 @@ model ForumPost {
   author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   likes ForumLike[]
+
+  @@index([authorId])
+  @@index([createdAt])
 }
 
 model ForumLike {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { getOpenAI, getOpenAIModel } from "@/lib/openaiClient";
 
 const SYSTEM = `You are the Parai Chatbot for Parai Tutor — a friendly expert on the Tamil parai frame drum, parai attam, rhythm patterns (nilai), strokes, history, and practice tips.
 
@@ -13,12 +13,12 @@ Guidelines:
 
 export async function POST(req) {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
+    const openai = getOpenAI();
+    if (!openai) {
       return NextResponse.json(
         {
           error:
-            "Anthropic API key is not configured. Add ANTHROPIC_API_KEY to your environment.",
+            "OpenAI is not configured. Set OPENAI_API_KEY in your environment (see .env.example).",
         },
         { status: 503 }
       );
@@ -26,7 +26,7 @@ export async function POST(req) {
 
     const body = await req.json();
     const messagesIn = Array.isArray(body.messages) ? body.messages : [];
-    const messages = messagesIn
+    const history = messagesIn
       .filter((m) => m && (m.role === "user" || m.role === "assistant") && m.content)
       .map((m) => ({
         role: m.role,
@@ -34,22 +34,17 @@ export async function POST(req) {
       }))
       .slice(-24);
 
-    if (!messages.length || messages[messages.length - 1].role !== "user") {
+    if (!history.length || history[history.length - 1].role !== "user") {
       return NextResponse.json({ error: "Send a user message" }, { status: 400 });
     }
 
-    const model = process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022";
-    const client = new Anthropic({ apiKey });
-
-    const response = await client.messages.create({
-      model,
+    const completion = await openai.chat.completions.create({
+      model: getOpenAIModel(),
       max_tokens: 4096,
-      system: SYSTEM,
-      messages,
+      messages: [{ role: "system", content: SYSTEM }, ...history],
     });
 
-    const textBlock = response.content.find((b) => b.type === "text");
-    const text = textBlock && textBlock.type === "text" ? textBlock.text : "";
+    const text = completion.choices[0]?.message?.content?.trim() || "";
 
     return NextResponse.json({ text });
   } catch (err) {

@@ -37,7 +37,7 @@ export default function ParaiChatbotPage() {
     {
       role: "assistant",
       content:
-        "Hi — I’m the Parai chatbot. Ask about strokes, nilai, history, or ask me to suggest videos and articles. Replies use Claude under the hood.",
+        "Hi — I’m the Parai chatbot. Ask about strokes, nilai, history, or ask me to suggest videos and articles. Replies use OpenAI.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -96,7 +96,7 @@ export default function ParaiChatbotPage() {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gradient-neon">Parai chatbot</h1>
             <p className="mt-1 text-slate-600 dark:text-slate-400 text-sm">
-              Powered by Claude — cultural context, practice help, and curated search links for videos &
+              Powered by OpenAI — cultural context, practice help, and curated search links for videos &
               articles.
             </p>
           </div>
@@ -160,8 +160,8 @@ export default function ParaiChatbotPage() {
         </div>
 
         <p className="mt-4 text-xs text-slate-500 text-center">
-          Configure <code className="text-red-600/90">ANTHROPIC_API_KEY</code> in your environment. Optional:{" "}
-          <code className="text-red-600/90">ANTHROPIC_MODEL</code>.
+          Uses <code className="text-red-600/90">OPENAI_API_KEY</code> (same as the rest of the app). Optional:{" "}
+          <code className="text-red-600/90">OPENAI_MODEL</code> (e.g. gpt-4o-mini).
         </p>
       </div>
     </div>
